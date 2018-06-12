@@ -1,5 +1,5 @@
+{ pkgs ? import <nixpkgs> {} }:
 let
-  pkgs = import <nixpkgs> {};
   overrides =  self: super: {
     datadog = pkgs.haskell.lib.dontCheck super.datadog;
   };
