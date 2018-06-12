@@ -25,6 +25,7 @@ import           Ntpq (doNtpq)
 import           Types (Foo(offset))
 import           Control.Concurrent     (threadDelay)
 import           Data.String            (IsString, fromString)
+import           Data.Maybe (mapMaybe)
 
 instance IsString MetricName where
   fromString = MetricName . T.pack
@@ -43,14 +44,18 @@ getAverageOffset = do
   let
     peers = runGet test (BSL.fromStrict $ data_ packet)
   let
-    go :: (Word16, Word16) -> IO Foo
+    go :: (Word16, Word16) -> IO (Maybe Foo)
     go (id, _) = do
       packet2 <- queryHost "127.0.0.1" (emptyPacket { op = ReadVariables, associationID = id })
       let res2 = parse p2 "filename" (T.decodeUtf8 (data_ packet2))
       case res2 of
-        Right (Success res2') -> pure res2'
-  results <- mapM go peers
-  doNtpq results
+        Right (Success res2') -> pure $ Just res2'
+        Left fail -> do
+          print fail
+          pure Nothing
+  results' <- mapM go peers
+  let results = mapMaybe id results'
+  --doNtpq results
   let
     avgOffset = (foldr (\result sum -> sum + (read $ offset result)) 0.0 results) / (fromIntegral $ length results)
   print avgOffset
