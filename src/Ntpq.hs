@@ -11,7 +11,7 @@ import qualified Data.Text.IO as T
 formatString :: Format r (String -> String -> String -> String -> String -> String -> String -> String -> r)
 formatString = "_" % right 18 ' ' % " " % right 15 ' ' % " " % string % " ? ?? ??    " % string % " " % left 7 ' ' % " " % left 8 ' ' % " " % left 7 ' ' % " = " % string
 
-doNtpq :: [Foo] -> IO ()
+doNtpq :: [ Variables ] -> IO ()
 doNtpq fs = do
   let
     go f = do

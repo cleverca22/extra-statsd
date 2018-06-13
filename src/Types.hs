@@ -7,7 +7,7 @@ module Types where
 import           Data.Aeson (FromJSON)
 import           GHC.Generics (Generic)
 
-data Foo = Foo {
+data Variables = Variables {
     srcadr :: String
   , offset :: String
   , refid :: String

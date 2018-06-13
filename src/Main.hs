@@ -22,7 +22,7 @@ import           Data.Void (Void)
 import qualified Data.HashMap.Strict as HM
 import           Data.Aeson (fromJSON, Value(String, Object), Result(Success))
 import           Ntpq (doNtpq)
-import           Types (Foo(offset))
+import           Types (Variables(offset))
 import           Control.Concurrent     (threadDelay)
 import           Data.String            (IsString, fromString)
 import           Data.Maybe (mapMaybe)
@@ -44,7 +44,7 @@ getAverageOffset = do
   let
     peers = runGet test (BSL.fromStrict $ data_ packet)
   let
-    go :: (Word16, Word16) -> IO (Maybe Foo)
+    go :: (Word16, Word16) -> IO (Maybe Variables)
     go (id, _) = do
       packet2 <- queryHost "127.0.0.1" (emptyPacket { op = ReadVariables, associationID = id })
       let res2 = parse p2 "filename" (T.decodeUtf8 (data_ packet2))
@@ -75,7 +75,7 @@ test2 = "srcadr=158.69.125.231, srcport=123, dstadr=192.168.2.15, dstport=123,\r
 
 type Parser = Parsec Void T.Text
 
-p2 :: Parser (Result Foo)
+p2 :: Parser (Result Variables)
 p2 = do
   list <- many $ label "p3" p3
   let map = Object $ HM.fromList list
