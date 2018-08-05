@@ -22,7 +22,7 @@ executable extra-statsd
   -- other-extensions:
   ghc-options:
                        -Weverything
-  build-depends:       base >=4.10 && <4.11
+  build-depends:       base
                      , datadog
                      , lens
                      , data-default
