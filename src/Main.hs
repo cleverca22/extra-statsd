@@ -16,12 +16,11 @@ import           Control.Applicative ()
 import           Control.Monad (void, forever)
 import qualified Data.Text as T
 import qualified Data.Text.Encoding as T
-import           Text.Megaparsec (Parsec, someTill, parse, (<|>), many, label, takeWhile1P)
-import           Text.Megaparsec.Char (string, anyChar)
+import           Text.Megaparsec (Parsec, someTill, parse, (<|>), many, label, takeWhile1P, anySingle)
+import           Text.Megaparsec.Char (string)
 import           Data.Void (Void)
 import qualified Data.HashMap.Strict as HM
 import           Data.Aeson (fromJSON, Value(String, Object), Result(Success))
-import           Ntpq (doNtpq)
 import           Types (Variables(offset))
 import           Control.Concurrent     (threadDelay)
 import           Data.String            (IsString, fromString)
@@ -83,7 +82,7 @@ p2 = do
 
 p3 :: Parser (T.Text, Value)
 p3 = do
-  key <- someTill anyChar (string "=")
+  key <- someTill anySingle (string "=")
   value <- takeWhile1P (Just "value") (\char -> case char of
     ',' -> False
     _ -> True)
